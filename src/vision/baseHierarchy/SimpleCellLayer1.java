@@ -1,23 +1,19 @@
 package vision.baseHierarchy;
 import util.utility;
 
-/*
-This function returns a list of list of S1 (Gabor) filters. Each Gabor filter is a square 2D array. The inner lists run
-over orientations (4 orientations per scale), and the outer list runs over scales (all the S1 RF sizes defined in the
-options).
- */
+import java.util.ArrayList;
 
 public class SimpleCellLayer1 {
 
-    //Build the library of S1 features
-    public void buildS1Filters(){
+    //Builds the dictionary of S1 features
+    //This method returns an array of S1 (Gabor) filters. Each Gabor filter is a square 2D array. The inner loop runs
+    //through orientations (4 orientations per scale) while the outer loop runs through scales
+    public ArrayList buildS1Filters(){
 
         //For any utility methods we need to use
         utility util = new utility();
         double temp;
 
-        //Store the filters here
-        double [][] filters;
         //Angle of filter (orientation)
         double theta;
         //TODO: Figure these out
@@ -32,15 +28,23 @@ public class SimpleCellLayer1 {
         //Fill the template grid with different angles
         double [][] x2, y2;
 
+        //Store the finalized set of filters
+        double [][][] filterks;
+        //Temporary filter array used for each receptive field size
+        double [][][][] filtersThjisSize;
         //Temporary filter array used for each theta in each size grid
         double [][] tempFilters;
 
+        ArrayList<ArrayList> filters = new ArrayList<ArrayList>();
+        ArrayList<double [][]> filtersThisSize = new ArrayList<double [][]>();
+
+
+        int counter = 0;
 
         //i is the receptive field size
-        //Grids below size 7 won't do much, but grids above 30 take too much time/resources
+        //Grids below size 7 won't do much, and grids above 30 take too much time/resources
         for (int i = 7; i < 30; i+=2){
 
-            double [] filtersThisSize;
             for (int j = 0; j < 4; j++){
                 //Four quadrants of unit circle
                 theta = j * 3.14159265/4;
@@ -62,6 +66,7 @@ public class SimpleCellLayer1 {
                 for (int k = 0; k<i; k++){
                     for (int r = 0; r<i; r++){
 
+                        //Calculate
                         x2[k][r] = (x[k][r] * Math.cos(theta)) + (y[k][r] * Math.sin(theta));
                         y2[k][r] = (-x[k][r] * Math.sin(theta)) + (y[k][r] * Math.cos(theta));
                         temp = -(x2[k][r] * x2[k][r] + gamma * gamma * y2[k][r] * y2[k][r]) / (2 * sigma * sigma);
@@ -73,10 +78,24 @@ public class SimpleCellLayer1 {
                         if (Math.sqrt(Math.pow(x[k][r],2)+Math.pow(y[k][r],2)) > (i/2)){
                             tempFilters[k][r] = 0;
                         }
+                    }
+                }
+
+                //Normalize
+                double mean = util.mean(tempFilters);
+                double squaredSum = util.squaredSum(tempFilters);
+                for (int k = 0; k<i; k++) {
+                    for (int r = 0; r < i; r++) {
+
+                        tempFilters[k][r] -= mean;
+                        tempFilters[k][r] /= Math.sqrt(squaredSum);
 
                     }
                 }
+                filtersThisSize.add(tempFilters);
             }
+            filters.add(filtersThisSize);
         }
+        return filters;
     }
 }

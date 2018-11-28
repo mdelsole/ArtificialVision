@@ -1,11 +1,11 @@
 import util.utility;
+import vision.baseHierarchy.SimpleCellLayer1;
 
 import java.util.Arrays;
 
 public class main {
     public static void main(String [] args){
-        utility util = new utility();
-
-        System.out.println(Arrays.deepToString(util.meshGridY(7, -3.5)));
+        SimpleCellLayer1 s = new SimpleCellLayer1();
+        s.buildS1Filters();
     }
 }
