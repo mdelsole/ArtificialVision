@@ -98,4 +98,27 @@ public class SimpleCellLayer1 {
         }
         return filters;
     }
+
+
+    /*
+    Dedicated function for running S1 filters (s1 needs dedicated method, other s layers can use a common one)
+    This is because S1 has special aspects (the input is 2D rather than 3D, the filters can get very large, etc.)
+
+    Takes in the image as an array
+
+    Each S1 cell is supposed to multiply its inputs by its filter, and then
+    divide the result by the norm of its input (normalized dot-product, AKA
+    cosine between inputs and filter - See Kouh 2006, or Jim Mutch's hmin
+    code). We do this efficiently by convolving the
+    image with each filter, then dividing the results pointwise with the square root of the
+    convolution of the squared image with a uniform filter of adequate size (for each scale).
+
+    Returns a list of 3D arrays (one per S1 scale). Each 3D array is a
+    depth-stack of 4 2D maps, one per orientation.
+
+    This function uses Fourier-based convolutions, which help with very large filters.
+    */
+    public void runS1Filters(double [] image){
+
+    }
 }
