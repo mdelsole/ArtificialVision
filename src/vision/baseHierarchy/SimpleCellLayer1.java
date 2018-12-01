@@ -10,6 +10,7 @@ public class SimpleCellLayer1 {
     //through orientations (4 orientations per scale) while the outer loop runs through scales
     public ArrayList buildS1Filters(){
 
+        System.out.println("Building Simple Cell Filters");
         //For any utility methods we need to use
         utility util = new utility();
         double temp;
@@ -101,24 +102,51 @@ public class SimpleCellLayer1 {
 
 
     /*
+    Separate method from buildS1Filters because we don't want to build the dictionary every time we use the filters
+
     Dedicated function for running S1 filters (s1 needs dedicated method, other s layers can use a common one)
     This is because S1 has special aspects (the input is 2D rather than 3D, the filters can get very large, etc.)
 
     Takes in the image as an array
 
-    Each S1 cell is supposed to multiply its inputs by its filter, and then
-    divide the result by the norm of its input (normalized dot-product, AKA
-    cosine between inputs and filter - See Kouh 2006, or Jim Mutch's hmin
-    code). We do this efficiently by convolving the
-    image with each filter, then dividing the results pointwise with the square root of the
-    convolution of the squared image with a uniform filter of adequate size (for each scale).
+    Each S1 cell will multiply its inputs by its filter, and then divide the result by the norm of its input
+    (normalized dot-product, AKA cosine between inputs and filter. We do this efficiently by convolving the
+    image with each filter, then dividing the results pointwise with the square root of the convolution of the squared
+    image with a uniform filter of adequate size (for each scale).
 
-    Returns a list of 3D arrays (one per S1 scale). Each 3D array is a
-    depth-stack of 4 2D maps, one per orientation.
+    Returns a list of 3D arrays (one per S1 scale). Each 3D array is a list 4 2D maps, one per orientation.
 
     This function uses Fourier-based convolutions, which help with very large filters.
     */
-    public void runS1Filters(double [] image){
+    public void runS1Filters(double [] image, ArrayList<ArrayList> s1Filters){
+
+        System.out.println("Running Simple Cell Filters");
+        ArrayList ouptut = new ArrayList();
+
+        double [] imageSquared = new double[image.length];
+        for (int i = 0; i < image.length; i++){
+            imageSquared[i] = Math.pow(image[i],2);
+        }
+
+        //Useful for unpacking the
+        ArrayList<double [][]> filtersThisSize = new ArrayList<double[][]>();
+        //Temp variable to determine rfsize during each iteration (7x7, 9x9, etc.)
+        double rfSize = 0;
+
+
+        //Each element in s1Filters is the set of filters (of various orientations) for a particular scale (rfsize).
+        for (int i = 0; i < s1Filters.size(); i++){
+            for (int j = 0; i < s1Filters.get(i).size(); i++){
+
+                //At any given scale, all filters have the same RF size. Thus, the RF size is simply the x-size of the
+                //filter at the first orientation
+                
+
+                //The output of every S1 neuron is divided by the Euclidan norm (root-sum-squares) of its inputs. We
+                //also take the absolute value.
+
+            }
+        }
 
     }
 }
