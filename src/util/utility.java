@@ -3,6 +3,24 @@ package util;
 //Bunch of Utility Methods
 public class utility {
 
+    ///////////////////////  1D ARRAY OPERATIONS  /////////////////////////
+
+
+    public double [][] to2D (double [] array, int rowLength, int colHeight){
+        int k = 0;
+        double [][] result = new double [rowLength][colHeight];
+        for (int i = 0; i < rowLength; i++){
+            for (int j = 0; j < colHeight; j++){
+                result[i][j] = array[k];
+                k++;
+            }
+        }
+        return result;
+    }
+
+
+    ///////////////////////  2D ARRAY OPERATIONS  /////////////////////////
+
 
     //X form of mesh grid, for now assuming lowerLim is always 0
     public double [][] meshGridX(int upperLim, double offset){
@@ -62,5 +80,18 @@ public class utility {
         return sum;
     }
 
+    //Converts a 2D matrix A into a 1D matrix B
+    public int[] to1D(int[][] A){
+
+        int[] B = new int[A.length * A[0].length];
+        int index = 0;
+
+        for(int i = 0;i < A.length;i++){
+            for(int j = 0;j < A[0].length;j++){
+                B[index++] = A[i][j];
+            }
+        }
+        return B;
+    }
 
 }

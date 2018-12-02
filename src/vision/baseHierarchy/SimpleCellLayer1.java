@@ -17,9 +17,10 @@ public class SimpleCellLayer1 {
 
         //Angle of filter (orientation)
         double theta;
-        //TODO: Figure these out
-        //It's a quadratic equation,
+        //A quadratic equation that decides the scale of the filters within their rfsizes.
+        //Lower sigma = sharper edged filters, higher sigma = blurry edged filters
         double sigma;
+        //TODO: Figure these out
         double lambda;
         double gamma;
 
@@ -67,7 +68,7 @@ public class SimpleCellLayer1 {
                 for (int k = 0; k<i; k++){
                     for (int r = 0; r<i; r++){
 
-                        //Calculate
+                        //Calculate gaussian filter
                         x2[k][r] = (x[k][r] * Math.cos(theta)) + (y[k][r] * Math.sin(theta));
                         y2[k][r] = (-x[k][r] * Math.sin(theta)) + (y[k][r] * Math.cos(theta));
                         temp = -(x2[k][r] * x2[k][r] + gamma * gamma * y2[k][r] * y2[k][r]) / (2 * sigma * sigma);
@@ -118,20 +119,21 @@ public class SimpleCellLayer1 {
 
     This function uses Fourier-based convolutions, which help with very large filters.
     */
-    public void runS1Filters(double [] image, ArrayList<ArrayList> s1Filters){
+    public void runS1Filters(double [] image, ArrayList<ArrayList<double [][]>> s1Filters){
 
         System.out.println("Running Simple Cell Filters");
         ArrayList ouptut = new ArrayList();
 
+        //Euclidean norm (sqrt of the sum of the squares) of the inputs. Almost same as magnitude
         double [] imageSquared = new double[image.length];
         for (int i = 0; i < image.length; i++){
             imageSquared[i] = Math.pow(image[i],2);
         }
 
-        //Useful for unpacking the
-        ArrayList<double [][]> filtersThisSize = new ArrayList<double[][]>();
         //Temp variable to determine rfsize during each iteration (7x7, 9x9, etc.)
-        double rfSize = 0;
+        int rfSize = 0;
+
+
 
 
         //Each element in s1Filters is the set of filters (of various orientations) for a particular scale (rfsize).
@@ -140,10 +142,18 @@ public class SimpleCellLayer1 {
 
                 //At any given scale, all filters have the same RF size. Thus, the RF size is simply the x-size of the
                 //filter at the first orientation
-                
 
-                //The output of every S1 neuron is divided by the Euclidan norm (root-sum-squares) of its inputs. We
-                //also take the absolute value.
+                for (int k = 0; k<i; k++) {
+                    for (int r = 0; r < i; r++) {
+
+                        rfSize = s1Filters.get(i).get(0).length;
+
+                        //The output of every S1 neuron is divided by the Euclidan norm (root-sum-squares) of its inputs. We
+                        //also take the absolute value.
+
+
+                    }
+                }
 
             }
         }
